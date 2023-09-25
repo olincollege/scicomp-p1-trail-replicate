@@ -8,7 +8,7 @@ The aim of this project is to simulate ant trail patterns using agent-based mode
 ## Background
  This is scientifically relevant since agent-based simulations have proved to be quite useful in explaining complex behaviors in social organisms that have otherwise limited capacity to self-organize.
 
- This project is based of the model presented by Watmough and Edelstein-Keshet in *Modelling the Formation of Trail Networks by Foraging Ants*. As might be evident from this project's name, the success of this implementation will be benchmarked by its similarity to the trail diagrams and variable relationships noted in the aforementioned paper.
+ This project is based off the model presented by Watmough and Edelstein-Keshet in *Modelling the Formation of Trail Networks by Foraging Ants*. As might be evident from this project's name, the success of this implementation will be benchmarked by its similarity to the trail diagrams and variable relationships noted in the aforementioned paper.
 
  ## Code Overview
  ### Pre-requisites
@@ -41,7 +41,7 @@ Figure 3(b) from paper    |  My figure (same parameters)
   ![](.img/paper_trails.png) | ![](.img/my_trails.png)
 
 
-  As you can see, the implementation and my figure had a similar shape. My figure looks messier with more light trails, but that is likely because of the scaling used. Additionally, the resultant (F/L) ratio for this figure from the paper was 14, and, with the same parameters, I got an average ratio of 15.6!
+  As you can see, the implementation and my figure had a similar shape. My figure looks messier with more light trails (and I'll include appropriate further discussion on that in the next section), but that could partly be because of difference in visual scaling. Additionally, the resultant (F/L) ratio for this figure from the paper was 14, and, with the same parameters, I got an average ratio of 15.6!
 
   Importantly, all the trends from modifying parameters described in the paper were replicated by my implementation:
   
@@ -53,6 +53,36 @@ Figure 3(b) from paper    |  My figure (same parameters)
 
   4) **Increasing the concentration of antennae saturating decreased number of strong trails** - This is tricky since I don't think I implemented this parameter as specified in the paper. The paper was kind of vague about this and never specified the normal value for it. I interpreted it as the maximum phermone concentration allowed on the lattice. When this was increased, there was a more complex web of weak trails as opposed fewer, stronger trails.
 
-  I did not test with the second version of the Forking Algorithm mentioned in the paper, both due to the vagueness of the results and time constraints.
+  I did not test with the second version of the Forking Algorithm mentioned in the paper, both due to time constraints and low relevance ascribed by the authors to its results.
 
-(TODO Discussion: Talk about how it was difficult without C_saturate specified, as well as mechanics of scaling. Also forking wasn't clear, also I had more center clustering)
+  ## Discussion
+  ### Differences (in method)
+  To begin the discussion, I first want to highlight the key differences between my implementation and that of the paper:
+
+  1) Determining the saturation concentration proved to be very puzzling. The paper didn't mention its value for the figures I benchmarked for, and it is very likely that I didn't use it in the same way that the authors used it in their model. They spoke about ants not being able to distinguish between separated trails beyond a saturated phermone level, whereas I used it as the ceiling value for deposited phermone level. The one place they did mention it (Figure 6), my results didn't match the figure at all. Either way, not knowing the value for this added uncertainty to my implementation being a good replication.
+
+  2) The forking algorithm (and adjacent implenentation of fidelity) too was confusion and open to interpretation. My interpretation was using fidelity as a weighted "coin flip". In other words:
+
+        1) If no trail near, keep exploring
+        2) If trail near, choose whether to follow depending on a variable that is weighted by the probability value ascribed to fidelity. 
+        3) If following trail, the forking algorithm is implemented in 4. and 5.
+        4) Continue to any trail directly ahead, *no matter how weak*
+        5) If nothing ahead checks the four squares to left and right and turn appropriately, weighted by angle and phermone concentration.
+
+  3) The last difference likely had to do with display. The paper appeared to display ants on top of trails. Zooming into the graphs it looked like while the phermones were displayed on a greyscale, the mass of ants on an established trail defined it further. My implementation was only limited to displaying phermone concentrations where the max was the darkest, which explained differences such as, for example, not being able to see exploring (lost) ants.
+
+  ### Differences (in results)
+  Perhaps due to any of the above factors and more, my implementation's results were different in two major ways:
+  
+  1) All my figures (except for those with narrow turning kernels) had lots of dark clustering around the center, whereas almost all of the paper's figures, regardless of parameter, had a pretty clear "X" shape.
+  2) I couldn't model the single trail behavior that a few figures in the paper showed. This was the single, long, winding trail that occurred during low deposition rates, but while I had stronger trails overall, there was never a single, winding one.
+
+  ### Next Steps
+  I feel like I came reasonably close enough to the figures I was planning to use as a benchmark. Instead of trying to perfect the match, I think more appropriate next steps would involve further research into ant behavior and trails. This could inform more appropriate implementations of things like the forking algorithm, deposition and evaporation, saturation, and much more. To gain more accuracy to real-world benchmarks, it would probably make more sense to model the ants on a lattice instead of the otherwise invisible phermones. And lastly, I think it could be interesting to research into modelling more complex behavior, such as possibilities for how ants communicate and form trails when they find a food source.
+
+  ## Conclusion
+  On the whole, I could successfully replicate trail forming behavior demonstrated by Watmough and Edelstein-Keshet in their paper, with the privilege of significantly more computing power and higher-level language. While there are some differences in approach and results, the current code provides a good starting point for further, more nuanced modelling.
+
+
+___
+If you made it all the way to the end, thank you for reading!!
