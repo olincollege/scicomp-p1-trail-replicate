@@ -3,7 +3,7 @@ from lattice import Lattice
 
 # Parameters
 RUNTIME = 1500
-FIDELITY = 0.8
+FIDELITY = 0.98
 KERNEL = [0.581, 0.36, 0.047, 0.008, 0.004]
 DEPOSITION_RATE = 8
 SATURATION = 80
